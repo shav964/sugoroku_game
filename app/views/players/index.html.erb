@@ -1,0 +1,86 @@
+<h1>すごろくゲーム</h1>
+
+<!-- プレイヤー追加フォーム -->
+<h2>プレイヤーを追加</h2>
+<%= form_with model: @player, url: players_path, local: true do |form| %>
+  <div>
+    <%= form.label :name, "プレイヤー名" %>
+    <%= form.text_field :name %> <!-- ここでの `:name` は、`player[name]` として送信されるはず -->
+  </div>
+  <div>
+    <%= form.submit "追加" %>
+  </div>
+<% end %>
+
+
+<!-- プレイヤーリストとサイコロを振るボタン -->
+<table>
+  <tr>
+    <th>プレイヤー名</th>
+    <th>現在の位置</th>
+    <th>サイコロを振る</th>
+  </tr>
+  <% @players.each do |player| %>
+    <tr>
+      <td><%= player.name %></td>
+      <td><%= player.position %> / 20</td>
+      <td>
+        <!-- サイコロを振るボタン -->
+        <%= button_to 'サイコロを振る', roll_dice_player_path(player), method: :post %>
+      </td>
+    </tr>
+  <% end %> <!-- この行の `end` が閉じられていませんでした -->
+</table>
+
+<%= flash[:notice] %>
+
+<div class="board">
+  <% (1..20).each do |i| %>
+    <div class="square <%= 'start' if i == 1 %> <%= 'goal' if i == 20 %>">
+      <%= i %>
+      <% @players.each do |player| %>
+        <% if player.position == i %>
+          <div class="player <%= player.name.downcase %>"></div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<div class="grid">
+  <% (1..20).each do |i| %>
+    <div class="cell <%= 'start' if i == 1 %> <%= 'goal' if i == 20 %>">
+      <%= i %>
+      <% @players.each do |player| %>
+        <% if player.position == i %>
+          <div class="piece piece-<%= player.color %>"></div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<%= flash[:notice] %>
+
+<style>
+  .board {
+    display: grid;
+    grid-template-columns: repeat(5, 50px);
+    grid-gap: 5px;
+  }
+  .square {
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .start { background-color: lightblue; }
+  .goal { background-color: lightgreen; }
+  .player { width: 20px; height: 20px; border-radius: 50%; }
+  .player.red { background-color: red; }
+  .player.blue { background-color: blue; }
+  .player.yellow { background-color: yellow; }
+  .player.green { background-color: green; }
+</style>
