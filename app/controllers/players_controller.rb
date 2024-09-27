@@ -21,7 +21,22 @@ class PlayersController < ApplicationController
       render :index, status: :unprocessable_entity # エラーがある場合は `index` ビューを再表示
     end
   end
-
+  def roll_dice
+    @player = Player.find(params[:id])
+    dice_roll = rand(1..6) # サイコロを振る（1から6のランダムな数字）
+  
+    # プレイヤーの位置を更新
+    new_position = [@player.position + dice_roll, 20].min
+    @player.update(position: new_position)
+  
+    # ゴールに到達したか確認
+    if new_position == 20
+      redirect_to players_path, notice: "#{@player.name}がゴールしました！"
+    else
+      redirect_to players_path, notice: "#{@player.name}が#{dice_roll}進みました！"
+    end
+  end
+  
   private
 
   def player_params
