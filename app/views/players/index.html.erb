@@ -38,49 +38,16 @@
   <% (1..20).each do |i| %>
     <div class="square <%= 'start' if i == 1 %> <%= 'goal' if i == 20 %>">
       <%= i %>
-      <% @players.each do |player| %>
-        <% if player.position == i %>
-          <div class="player <%= player.name.downcase %>"></div>
-        <% end %>
+      <% players_in_square = @players.select { |player| player.position == i } %>
+      <% players_in_square.each_with_index do |player, index| %>
+        <div class="player <%= player.color %>" style="top: <%= 20 + index * 8 %>px;" title="<%= player.name %>"></div>
       <% end %>
     </div>
   <% end %>
 </div>
 
-<div class="grid">
-  <% (1..20).each do |i| %>
-    <div class="cell <%= 'start' if i == 1 %> <%= 'goal' if i == 20 %>">
-      <%= i %>
-      <% @players.each do |player| %>
-        <% if player.position == i %>
-          <div class="piece piece-<%= player.color %>"></div>
-        <% end %>
-      <% end %>
-    </div>
-  <% end %>
-</div>
+
+
 
 <%= flash[:notice] %>
 
-<style>
-  .board {
-    display: grid;
-    grid-template-columns: repeat(5, 50px);
-    grid-gap: 5px;
-  }
-  .square {
-    width: 50px;
-    height: 50px;
-    border: 1px solid black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .start { background-color: lightblue; }
-  .goal { background-color: lightgreen; }
-  .player { width: 20px; height: 20px; border-radius: 50%; }
-  .player.red { background-color: red; }
-  .player.blue { background-color: blue; }
-  .player.yellow { background-color: yellow; }
-  .player.green { background-color: green; }
-</style>
