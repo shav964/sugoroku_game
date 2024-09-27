@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     end
     collection do
       delete 'destroy_all' # 全プレイヤー削除のルート
-      post 'reset_positions' # マスの記録をリセットのルート
+      post 'reset_positions' # プレイヤー位置をリセットのルート
     end
   end
   root 'players#index'

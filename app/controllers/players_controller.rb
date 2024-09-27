@@ -36,7 +36,15 @@ class PlayersController < ApplicationController
       redirect_to players_path, notice: "#{@player.name}が#{dice_roll}進みました！"
     end
   end
-  
+  def destroy_all
+    Player.delete_all # すべてのプレイヤーをデータベースから削除する
+    redirect_to players_path, notice: '全プレイヤーが削除されました！'
+  end
+
+  def reset_positions
+    Player.update_all(position: 0) # すべてのプレイヤーの位置を0にリセット
+    redirect_to players_path, notice: '全プレイヤーの位置がリセットされました！'
+  end
   private
 
   def player_params

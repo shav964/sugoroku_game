@@ -47,6 +47,8 @@
 </div>
 
 
+<%= button_to '全員の位置をリセット', reset_positions_players_path, method: :post, data: { confirm: '本当に全員の位置をリセットしますか？' } %>
+<%= button_to '全プレイヤーを削除', destroy_all_players_path, method: :delete, data: { confirm: '全プレイヤーを削除してもよろしいですか？' } %>
 
 
 <%= flash[:notice] %>
