@@ -1,4 +1,7 @@
-import { Application } from "@hotwired/stimulus"
+import { Application } from "@hotwired/stimulus";
+
+// ここで consumer をインポート
+import consumer from "../channels/consumer"; // channels フォルダから相対パスでインポート
 
 const application = Application.start()
 

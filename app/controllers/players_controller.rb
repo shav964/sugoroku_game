@@ -23,18 +23,19 @@ class PlayersController < ApplicationController
   end
   def roll_dice
     @player = Player.find(params[:id])
-    dice_roll = rand(1..6) # サイコロを振る（1から6のランダムな数字）
-  
-    # プレイヤーの位置を更新
+    dice_roll = rand(1..6)
     new_position = [@player.position + dice_roll, 20].min
     @player.update(position: new_position)
   
-    # ゴールに到達したか確認
-    if new_position == 20
-      redirect_to players_path, notice: "#{@player.name}がゴールしました！"
-    else
-      redirect_to players_path, notice: "#{@player.name}が#{dice_roll}進みました！"
-    end
+    # サイコロ結果とプレイヤーの新しい位置をブロードキャスト
+    ActionCable.server.broadcast 'game_channel', {
+      player_id: @player.id,
+      dice_result: dice_roll,
+      new_position: new_position,
+      player_name: @player.name
+    }
+  
+    redirect_to players_path, notice: "#{@player.name}が#{dice_roll}進みました！"
   end
   def destroy_all
     Player.delete_all # すべてのプレイヤーをデータベースから削除する

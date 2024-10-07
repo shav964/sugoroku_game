@@ -21,15 +21,14 @@
     <th>サイコロを振る</th>
   </tr>
   <% @players.each do |player| %>
-    <tr>
+    <tr data-player-id="<%= player.id %>">
       <td><%= player.name %></td>
-      <td><%= player.position %> / 20</td>
+      <td class="position"><%= player.position %> / 20</td>
       <td>
-        <!-- サイコロを振るボタン -->
         <%= button_to 'サイコロを振る', roll_dice_player_path(player), method: :post %>
       </td>
     </tr>
-  <% end %> <!-- この行の `end` が閉じられていませんでした -->
+  <% end %>
 </table>
 
 <%= flash[:notice] %>

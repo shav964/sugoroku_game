@@ -1,13 +1,37 @@
-import consumer from "./consumer"
+// app/javascript/channels/game_channel.js
+import consumer from "./consumer";
 
-document.getElementById("roll-dice-btn").addEventListener("click", () => {
-  consumer.subscriptions.create({ channel: "GameChannel", game_id: GAME_ID }, {
-    received(data) {
-      // サイコロの結果をUIに反映
-      document.getElementById("dice-result").innerText = data.dice_result;
+document.addEventListener('DOMContentLoaded', () => {
+  consumer.subscriptions.create("GameChannel", {
+    connected() {
+      console.log("Connected to GameChannel");
     },
-    rollDice() {
-      this.perform("roll_dice", { game_id: GAME_ID, player_id: PLAYER_ID });
+
+    disconnected() {
+      console.log("Disconnected from GameChannel");
+    },
+
+    received(data) {
+      // ブロードキャストされたデータを受け取り、画面を更新
+      const playerId = data.player_id;
+      const newPosition = data.new_position;
+      const diceResult = data.dice_result;
+      const playerName = data.player_name;
+
+      // プレイヤーの位置を更新
+      const playerRow = document.querySelector(`[data-player-id='${playerId}']`);
+      if (playerRow) {
+        playerRow.querySelector('.position').innerText = `${newPosition} / 20`;
+      }
+
+      // コマの位置を更新
+      const playerPiece = document.querySelector(`.player-${playerId}`);
+      if (playerPiece) {
+        playerPiece.style.left = `${newPosition * 50}px`;  // 例: マスの幅が50pxの場合
+      }
+
+      // メッセージの表示（任意）
+      alert(`${playerName}がサイコロを振って${diceResult}が出ました！`);
     }
-  }).rollDice();
+  });
 });
